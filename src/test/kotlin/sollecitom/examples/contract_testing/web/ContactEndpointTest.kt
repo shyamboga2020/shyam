@@ -34,7 +34,8 @@ internal class ContactEndpointTest {
 
         val contact1 = Contact("1", "Mark", "Dadada", "+170231902")
         val contact2 = Contact("2", "Zack", "Test", "+167219317")
-        `when`(registry.iterator()).thenReturn(listOf(contact1, contact2).iterator())
+        val contacts = listOf(contact1, contact2)
+        `when`(registry.iterator()).thenReturn(contacts.iterator())
 
         // TODO make request for get by id; check that answer is OK, check that the JSON payload complies with schema, check that for each contact the fields of the JSON payload match the first, last and phone.
     }
