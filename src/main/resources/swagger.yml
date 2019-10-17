@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  title: Contacts Registry WebApp
+  description: A contract testing example for a web API.
+  version: 1.0.0
+
+paths:
+  /contacts:
+    get:
+      summary: Retrieves all contacts, in no particular order.
+      responses:
+        '200':
+          description: All contacts in the registry.
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: './components/Contact.json'
+    post:
+      summary: Creates a new contact, according to the payload.
+      requestBody:
+        description: Contact details.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/NewContact.json'
+      responses:
+        '201':
+          description: The contact was created.
+          headers:
+            Location:
+              description: Location of the created contact.
+              schema:
+                type: string
+              required: true
+
+  /contacts/{id}:
+    get:
+      summary: Retrieves a specific contact.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the contact to retrieve.
+      responses:
+        '200':
+          description: The retrieved contact.
+          content:
+            application/json:
+              schema:
+                $ref: './components/Contact.json'
+        '404':
+          description: No contact was found for the specified ID.
+    delete:
+      summary: Deletes a specific contact.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the contact to retrieve.
+      responses:
+        '204':
+          description: The contact was deleted.
+        '404':
+          description: No contact was found for the specified ID.

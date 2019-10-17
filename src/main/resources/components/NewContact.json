@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "phoneNumber": {
+      "type": "String"
+    }
+  },
+  "required": [
+    "firstName",
+    "lastName",
+    "phoneNumber"
+  ]
+}
