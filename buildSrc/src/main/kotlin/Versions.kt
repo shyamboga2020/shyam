@@ -1,6 +1,7 @@
 object Versions {
 
     const val springBoot = "2.1.9.RELEASE"
+    const val spring = "5.2.0.RELEASE"
     const val json = "20180813"
     const val everitJsonSchema = "1.5.1"
     const val junit = "5.5.2"

@@ -1,6 +1,7 @@
 package sollecitom.examples.contract_testing.web
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,6 +9,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.context.annotation.Configuration
+import org.springframework.test.context.junit.jupiter.SpringExtension
 import sollecitom.examples.contract_testing.application.Contact
 import sollecitom.examples.contract_testing.application.ContactsRegistry
 import sollecitom.examples.contract_testing.application.NewContact
@@ -17,9 +20,13 @@ private const val FIRST_NAME_FIELD = "firstName"
 private const val LAST_NAME_FIELD = "lastName"
 private const val PHONE_NUMBER_FIELD = "phoneNumber"
 
+@ExtendWith(SpringExtension::class)
 @EnableAutoConfiguration
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-internal class ContactEndpointTest @Autowired constructor(@LocalServerPort private val serverPort: Int) {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [ContactEndpointTest.SpringConfiguration::class])
+internal class ContactEndpointTest {
+
+    @LocalServerPort
+    private var port: Int = 0
 
     @MockBean
     lateinit var registry: ContactsRegistry
@@ -83,4 +90,7 @@ internal class ContactEndpointTest @Autowired constructor(@LocalServerPort priva
 
         // TODO make request for delete by id; check that answer is NOT_FOUND.
     }
+
+    @Configuration
+    open class SpringConfiguration
 }

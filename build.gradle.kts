@@ -22,6 +22,7 @@ dependencies {
         testImplementation(kotlin("test"))
         testImplementation(group = "org.everit.json", name = "org.everit.json.schema", version = everitJsonSchema)
         testImplementation(group = "org.springframework.boot", name = "spring-boot-test", version = springBoot)
+        testImplementation(group = "org.springframework", name = "spring-test", version = spring)
         testImplementation(group = "com.willowtreeapps.assertk", name = "assertk", version = assertk, ext = "pom")
         testImplementation(group = "org.mockito", name = "mockito-core", version = mockito)
         testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-api", version = junit)
