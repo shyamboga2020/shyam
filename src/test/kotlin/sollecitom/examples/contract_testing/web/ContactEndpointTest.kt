@@ -2,6 +2,7 @@ package sollecitom.examples.contract_testing.web
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import org.json.JSONObject
 import org.junit.jupiter.api.Test
@@ -85,7 +86,9 @@ internal class ContactEndpointTest {
         val id = "123"
         `when`(registry[eq(id)]).thenReturn(null)
 
-        // TODO make request for get by id; check that answer is NOT_FOUND.
+        val (_, response, _) = "http://localhost:$port/$ENDPOINT/$id".httpGet().response()
+
+        assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND.value())
     }
 
     @Test
@@ -94,7 +97,9 @@ internal class ContactEndpointTest {
         val id = "123"
         `when`(registry.remove(eq(id))).thenReturn(true)
 
-        // TODO make request for delete by id; check that answer is NO_CONTENT.
+        val (_, response, _) = "http://localhost:$port/$ENDPOINT/$id".httpDelete().response()
+
+        assertThat(response.statusCode).isEqualTo(HttpStatus.NO_CONTENT.value())
     }
 
     @Test
@@ -103,7 +108,9 @@ internal class ContactEndpointTest {
         val id = "123"
         `when`(registry.remove(eq(id))).thenReturn(false)
 
-        // TODO make request for delete by id; check that answer is NOT_FOUND.
+        val (_, response, _) = "http://localhost:$port/$ENDPOINT/$id".httpDelete().response()
+
+        assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND.value())
     }
 
     private fun JSONObject.toContact(): Contact {

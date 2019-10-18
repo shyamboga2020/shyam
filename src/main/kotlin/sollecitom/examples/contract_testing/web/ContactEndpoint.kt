@@ -53,8 +53,8 @@ class ContactEndpoint @Autowired constructor(private val registry: ContactsRegis
     @DeleteMapping(SPECIFIC_ID)
     fun removeOne(@PathVariable(ID) id: String): ResponseEntity<Unit> {
 
-        registry.remove(id)
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+        val removed = registry.remove(id)
+        return ResponseEntity.status(if (removed) HttpStatus.NO_CONTENT else HttpStatus.NOT_FOUND).build()
     }
 
     private fun Contact.toJsonArray(): JSONObject = JSONObject().put(ID_FIELD, id).put(FIRST_NAME_FIELD, firstName).put(LAST_NAME_FIELD, lastName).put(PHONE_NUMBER_FIELD, phoneNumber)
