@@ -59,7 +59,7 @@ internal class ContactEndpointContractTest {
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK.value())
         assertThat(jsonArray).hasSameSizeHas(contacts)
 
-        jsonArray.map { it as JSONObject }.forEachIndexed { index, json ->
+        jsonArray.map { element -> element as JSONObject }.forEachIndexed { index, json ->
             assertThat(json).compliesWith(contactSchema)
             assertThat(json.toContact()).isEqualTo(contacts[index])
         }
