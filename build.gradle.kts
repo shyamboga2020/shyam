@@ -9,6 +9,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven("http://repo.spring.io/libs-release")
 }
 
 dependencies {
@@ -20,10 +21,12 @@ dependencies {
         implementation(group = "org.json", name = "json", version = json)
 
         testImplementation(kotlin("test"))
+        testImplementation(group = "com.github.kittinunf.fuel", name = "fuel", version = fuel)
+        testImplementation(group = "com.github.kittinunf.fuel", name = "fuel-json", version = fuelJson)
         testImplementation(group = "org.everit.json", name = "org.everit.json.schema", version = everitJsonSchema)
         testImplementation(group = "org.springframework.boot", name = "spring-boot-test", version = springBoot)
         testImplementation(group = "org.springframework", name = "spring-test", version = spring)
-        testImplementation(group = "com.willowtreeapps.assertk", name = "assertk", version = assertk, ext = "pom")
+        testImplementation(group = "com.willowtreeapps.assertk", name = "assertk", version = assertk)
         testImplementation(group = "org.mockito", name = "mockito-core", version = mockito)
         testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-api", version = junit)
         testRuntime(group = "org.junit.jupiter", name = "junit-jupiter-engine", version = junit)

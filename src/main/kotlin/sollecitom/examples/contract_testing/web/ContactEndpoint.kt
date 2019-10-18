@@ -15,6 +15,8 @@ import java.net.URI
 private const val ENDPOINT = "/contacts"
 private const val SPECIFIC_ID = "/{id}"
 private const val ID = "id"
+
+private const val ID_FIELD = "id"
 private const val FIRST_NAME_FIELD = "firstName"
 private const val LAST_NAME_FIELD = "lastName"
 private const val PHONE_NUMBER_FIELD = "phoneNumber"
@@ -38,7 +40,7 @@ class ContactEndpoint @Autowired constructor(private val registry: ContactsRegis
         return ResponseEntity.created(resourceLocation).build()
     }
 
-    @DeleteMapping(SPECIFIC_ID)
+    @GetMapping(SPECIFIC_ID)
     fun retrieveOne(@PathVariable(ID) id: String): ResponseEntity<String?> {
 
         val contact = registry[id]
@@ -55,7 +57,7 @@ class ContactEndpoint @Autowired constructor(private val registry: ContactsRegis
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
-    private fun Contact.toJsonArray(): JSONObject = JSONObject().put(FIRST_NAME_FIELD, firstName).put(LAST_NAME_FIELD, lastName).put(PHONE_NUMBER_FIELD, phoneNumber)
+    private fun Contact.toJsonArray(): JSONObject = JSONObject().put(ID_FIELD, id).put(FIRST_NAME_FIELD, firstName).put(LAST_NAME_FIELD, lastName).put(PHONE_NUMBER_FIELD, phoneNumber)
 
     private fun Iterable<Contact>.toJsonArray(): JSONArray = map { it.toJsonArray() }.fold(JSONArray()) { array, obj -> array.put(obj) }
 

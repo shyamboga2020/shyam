@@ -11,7 +11,7 @@
       "type": "string"
     },
     "phoneNumber": {
-      "type": "String"
+      "type": "string"
     }
   },
   "required": [
