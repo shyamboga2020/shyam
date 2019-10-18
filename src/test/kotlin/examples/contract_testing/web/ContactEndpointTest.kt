@@ -138,8 +138,7 @@ internal class ContactEndpointTest {
 
     private fun NewContact.toJson(): JSONObject {
 
-        return JSONObject().put(FIRST_NAME_FIELD, firstName).put(LAST_NAME_FIELD, lastName)
-            .put(PHONE_NUMBER_FIELD, phoneNumber)
+        return JSONObject().put(FIRST_NAME_FIELD, firstName).put(LAST_NAME_FIELD, lastName).put(PHONE_NUMBER_FIELD, phoneNumber)
     }
 
     @Configuration
