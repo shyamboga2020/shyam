@@ -34,8 +34,8 @@ private const val NEW_CONTACT_SCHEMA_LOCATION = "/components/NewContact.json"
 
 @ExtendWith(SpringExtension::class)
 @EnableAutoConfiguration
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [ContactEndpointTest.SpringConfiguration::class])
-internal class ContactEndpointTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [ContactEndpointContractTest.SpringConfiguration::class])
+internal class ContactEndpointContractTest {
 
     @LocalServerPort
     private var port: Int = 0
