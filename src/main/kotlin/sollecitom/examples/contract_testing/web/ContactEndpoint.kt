@@ -7,10 +7,10 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.util.UriComponentsBuilder
 import sollecitom.examples.contract_testing.application.Contact
 import sollecitom.examples.contract_testing.application.ContactsRegistry
 import sollecitom.examples.contract_testing.application.NewContact
-import java.net.URI
 
 private const val ENDPOINT = "/contacts"
 private const val SPECIFIC_ID = "/{id}"
@@ -32,11 +32,11 @@ class ContactEndpoint @Autowired constructor(private val registry: ContactsRegis
     }
 
     @PostMapping
-    fun createNew(@RequestBody payload: String): ResponseEntity<Unit> {
+    fun createNew(@RequestBody payload: String, uriBuilder: UriComponentsBuilder): ResponseEntity<Unit> {
 
         val contact = payload.parseContact()
         val id = registry.add(contact)
-        val resourceLocation = URI.create("$ENDPOINT/$id")
+        val resourceLocation = uriBuilder.path("$ENDPOINT/{}}").buildAndExpand(id).toUri()
         return ResponseEntity.created(resourceLocation).build()
     }
 

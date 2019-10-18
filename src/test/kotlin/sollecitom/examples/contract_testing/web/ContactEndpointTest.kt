@@ -2,8 +2,10 @@ package sollecitom.examples.contract_testing.web
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.httpPost
 import org.json.JSONObject
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -14,13 +16,14 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import sollecitom.examples.contract_testing.application.Contact
 import sollecitom.examples.contract_testing.application.ContactsRegistry
 import sollecitom.examples.contract_testing.application.NewContact
 
-private const val ENDPOINT = "/contacts"
+private const val ENDPOINT = "contacts"
 private const val ID_FIELD = "id"
 private const val FIRST_NAME_FIELD = "firstName"
 private const val LAST_NAME_FIELD = "lastName"
@@ -64,7 +67,13 @@ internal class ContactEndpointTest {
         val newContact = NewContact("Mark", "Dadada", "+170231902")
         `when`(registry.add(newContact)).thenReturn(id)
 
-        // TODO make request for post; check that answer is CREATED, check that the Location header is there and contains the `id`.
+        val jsonPayload = newContact.toJson()
+        assertThat(jsonPayload).compliesWith(newContactSchema)
+
+        val (_, response, _) = "http://localhost:$port/$ENDPOINT".httpPost().jsonBody(jsonPayload.toString()).response()
+
+        assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED.value())
+        assertThat(response.header(HttpHeaders.LOCATION).single()).isEqualTo("http://localhost:$port/$ENDPOINT/$id")
     }
 
     @Test
@@ -120,6 +129,11 @@ internal class ContactEndpointTest {
         val lastName = getString(LAST_NAME_FIELD)
         val phoneNumber = getString(PHONE_NUMBER_FIELD)
         return Contact(id, firstName, lastName, phoneNumber)
+    }
+
+    private fun NewContact.toJson(): JSONObject {
+
+        return JSONObject().put(FIRST_NAME_FIELD, firstName).put(LAST_NAME_FIELD, lastName).put(PHONE_NUMBER_FIELD, phoneNumber)
     }
 
     @Configuration
