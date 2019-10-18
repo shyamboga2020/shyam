@@ -1,4 +1,4 @@
-package sollecitom.examples.contract_testing.application
+package examples.contract_testing.application
 
 interface ContactsRegistry : Iterable<Contact> {
 

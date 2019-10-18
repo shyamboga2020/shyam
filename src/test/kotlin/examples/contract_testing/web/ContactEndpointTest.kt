@@ -1,4 +1,4 @@
-package sollecitom.examples.contract_testing.web
+package examples.contract_testing.web
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -6,6 +6,9 @@ import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
+import examples.contract_testing.application.Contact
+import examples.contract_testing.application.ContactsRegistry
+import examples.contract_testing.application.NewContact
 import org.json.JSONObject
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -19,9 +22,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import sollecitom.examples.contract_testing.application.Contact
-import sollecitom.examples.contract_testing.application.ContactsRegistry
-import sollecitom.examples.contract_testing.application.NewContact
 
 private const val ENDPOINT = "contacts"
 private const val ID_FIELD = "id"
@@ -34,10 +34,7 @@ private const val NEW_CONTACT_SCHEMA_LOCATION = "/components/NewContact.json"
 
 @ExtendWith(SpringExtension::class)
 @EnableAutoConfiguration
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = [ContactEndpointTest.SpringConfiguration::class]
-)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [ContactEndpointTest.SpringConfiguration::class])
 internal class ContactEndpointTest {
 
     @LocalServerPort
@@ -57,7 +54,15 @@ internal class ContactEndpointTest {
         val contacts = listOf(contact1, contact2)
         `when`(registry.iterator()).thenReturn(contacts.iterator())
 
-        // TODO make request for get all; check that answer is OK, check that the JSON payload complies with schema, check that for each contact the fields of the JSON payload match the first, last and phone.
+        val (_, response, jsonArray) = "http://localhost:$port/$ENDPOINT".httpGet().responseJsonArray()
+
+        assertThat(response.statusCode).isEqualTo(HttpStatus.OK.value())
+        assertThat(jsonArray).hasSameSizeHas(contacts)
+
+        jsonArray.map { it as JSONObject }.forEachIndexed { index, json ->
+            assertThat(json).compliesWith(contactSchema)
+            assertThat(json.toContact()).isEqualTo(contacts[index])
+        }
     }
 
     @Test
@@ -133,10 +138,11 @@ internal class ContactEndpointTest {
 
     private fun NewContact.toJson(): JSONObject {
 
-        return JSONObject().put(FIRST_NAME_FIELD, firstName).put(LAST_NAME_FIELD, lastName).put(PHONE_NUMBER_FIELD, phoneNumber)
+        return JSONObject().put(FIRST_NAME_FIELD, firstName).put(LAST_NAME_FIELD, lastName)
+            .put(PHONE_NUMBER_FIELD, phoneNumber)
     }
 
     @Configuration
-    @ComponentScan("sollecitom.examples.contract_testing")
+    @ComponentScan("examples.contract_testing")
     open class SpringConfiguration
 }

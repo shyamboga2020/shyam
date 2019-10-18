@@ -1,4 +1,4 @@
-package sollecitom.examples.contract_testing.web
+package examples.contract_testing.web
 
 import assertk.Assert
 import assertk.assertions.support.fail
@@ -22,6 +22,20 @@ fun Assert<JSONObject>.compliesWith(schema: Schema) = given { actual ->
         schema.validate(actual)
     } catch (e: ValidationException) {
         fail("JSON object does not comply with JSON schema $schema.\nErrors were ${e.allMessages}.", e)
+    }
+}
+
+fun Assert<JSONArray>.hasLength(length: Int) = given { actual ->
+
+    if (actual.length() != length) {
+        fail(length, actual.length())
+    }
+}
+
+fun Assert<JSONArray>.hasSameSizeHas(other: Collection<*>) = given { actual ->
+
+    if (actual.length() != other.size) {
+        fail(other.size, actual.length())
     }
 }
 

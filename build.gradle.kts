@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-group = "sollecitom.examples"
+group = "examples"
 version = "1.0-SNAPSHOT"
 
 plugins {

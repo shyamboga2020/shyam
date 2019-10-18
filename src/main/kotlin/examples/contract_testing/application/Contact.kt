@@ -1,4 +1,4 @@
-package sollecitom.examples.contract_testing.application
+package examples.contract_testing.application
 
 class Contact(val id: String, val firstName: String, val lastName: String, val phoneNumber: String) {
 

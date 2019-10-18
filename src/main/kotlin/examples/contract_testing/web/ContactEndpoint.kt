@@ -1,4 +1,4 @@
-package sollecitom.examples.contract_testing.web
+package examples.contract_testing.web
 
 import org.json.JSONArray
 import org.json.JSONObject
@@ -8,9 +8,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
-import sollecitom.examples.contract_testing.application.Contact
-import sollecitom.examples.contract_testing.application.ContactsRegistry
-import sollecitom.examples.contract_testing.application.NewContact
+import examples.contract_testing.application.Contact
+import examples.contract_testing.application.ContactsRegistry
+import examples.contract_testing.application.NewContact
 
 private const val ENDPOINT = "/contacts"
 private const val SPECIFIC_ID = "/{id}"
