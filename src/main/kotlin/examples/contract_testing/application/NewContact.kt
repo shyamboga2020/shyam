@@ -1,6 +1,3 @@
 package examples.contract_testing.application
 
-data class NewContact(val firstName: String, val lastName: String, val phoneNumber: String) {
-
-    fun withId(id: String): Contact = Contact(id, firstName, lastName, phoneNumber)
-}
+data class NewContact(val firstName: String, val lastName: String, val phoneNumber: PhoneNumber)

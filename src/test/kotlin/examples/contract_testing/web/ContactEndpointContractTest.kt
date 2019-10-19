@@ -9,6 +9,7 @@ import com.github.kittinunf.fuel.httpPost
 import examples.contract_testing.application.Contact
 import examples.contract_testing.application.ContactsRegistry
 import examples.contract_testing.application.NewContact
+import examples.contract_testing.application.PhoneNumber
 import org.json.JSONObject
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -32,6 +33,8 @@ private const val PHONE_NUMBER_FIELD = "phoneNumber"
 private const val CONTACT_SCHEMA_LOCATION = "/components/Contact.json"
 private const val NEW_CONTACT_SCHEMA_LOCATION = "/components/NewContact.json"
 
+private const val LOCALHOST = "http://localhost"
+
 @ExtendWith(SpringExtension::class)
 @EnableAutoConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [ContactEndpointContractTest.SpringConfiguration::class])
@@ -49,12 +52,12 @@ internal class ContactEndpointContractTest {
     @Test
     fun retrieveAll() {
 
-        val contact1 = Contact("1", "Mark", "Dadada", "+170231902")
-        val contact2 = Contact("2", "Zack", "Test", "+167219317")
+        val contact1 = Contact("1", "Mark", "Dadada", PhoneNumber("+170231902"))
+        val contact2 = Contact("2", "Zack", "Test", PhoneNumber("+167219317"))
         val contacts = listOf(contact1, contact2)
         `when`(registry.iterator()).thenReturn(contacts.iterator())
 
-        val (_, response, jsonArray) = "http://localhost:$port/$ENDPOINT".httpGet().responseJsonArray()
+        val (_, response, jsonArray) = "$LOCALHOST:$port/$ENDPOINT".httpGet().responseJsonArray()
 
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK.value())
         assertThat(jsonArray).hasSameSizeHas(contacts)
@@ -68,25 +71,40 @@ internal class ContactEndpointContractTest {
     fun createNew() {
 
         val id = "123"
-        val newContact = NewContact("Mark", "Dadada", "+170231902")
+        val newContact = NewContact("Mark", "Dadada", PhoneNumber("+170231902"))
         `when`(registry.add(newContact)).thenReturn(id)
 
         val jsonPayload = newContact.toJson()
         assertThat(jsonPayload).compliesWith(newContactSchema)
 
-        val (_, response, _) = "http://localhost:$port/$ENDPOINT".httpPost().jsonBody(jsonPayload.toString()).response()
+        val (_, response, _) = "$LOCALHOST:$port/$ENDPOINT".httpPost().jsonBody(jsonPayload.toString()).response()
 
         assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED.value())
-        assertThat(response.header(HttpHeaders.LOCATION).single()).isEqualTo("http://localhost:$port/$ENDPOINT/$id")
+        assertThat(response.header(HttpHeaders.LOCATION).single()).isEqualTo("$LOCALHOST:$port/$ENDPOINT/$id")
+    }
+
+    @Test
+    fun createNewWithInvalidData() {
+
+        val newContact = NewContact("Mark", "Dadada", PhoneNumber("+170231902"))
+
+        val jsonPayload = newContact.toJson()
+        jsonPayload.put("phoneNumber", "+abc231902")
+
+        assertThat(jsonPayload).compliesWith(newContactSchema)
+
+        val (_, response, _) = "$LOCALHOST:$port/$ENDPOINT".httpPost().jsonBody(jsonPayload.toString()).response()
+
+        assertThat(response.statusCode).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value())
     }
 
     @Test
     fun retrieveOne() {
 
-        val contact = Contact("123", "Mark", "Dadada", "+170231902")
+        val contact = Contact("123", "Mark", "Dadada", PhoneNumber("+170231902"))
         `when`(registry[eq(contact.id)]).thenReturn(contact)
 
-        val (_, response, json) = "http://localhost:$port/$ENDPOINT/${contact.id}".httpGet().responseJsonObject()
+        val (_, response, json) = "$LOCALHOST:$port/$ENDPOINT/${contact.id}".httpGet().responseJsonObject()
 
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK.value())
         assertThat(json).compliesWith(contactSchema)
@@ -99,7 +117,7 @@ internal class ContactEndpointContractTest {
         val id = "123"
         `when`(registry[eq(id)]).thenReturn(null)
 
-        val (_, response, _) = "http://localhost:$port/$ENDPOINT/$id".httpGet().response()
+        val (_, response, _) = "$LOCALHOST:$port/$ENDPOINT/$id".httpGet().response()
 
         assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND.value())
     }
@@ -110,7 +128,7 @@ internal class ContactEndpointContractTest {
         val id = "123"
         `when`(registry.remove(eq(id))).thenReturn(true)
 
-        val (_, response, _) = "http://localhost:$port/$ENDPOINT/$id".httpDelete().response()
+        val (_, response, _) = "$LOCALHOST:$port/$ENDPOINT/$id".httpDelete().response()
 
         assertThat(response.statusCode).isEqualTo(HttpStatus.NO_CONTENT.value())
     }
@@ -121,7 +139,7 @@ internal class ContactEndpointContractTest {
         val id = "123"
         `when`(registry.remove(eq(id))).thenReturn(false)
 
-        val (_, response, _) = "http://localhost:$port/$ENDPOINT/$id".httpDelete().response()
+        val (_, response, _) = "$LOCALHOST:$port/$ENDPOINT/$id".httpDelete().response()
 
         assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND.value())
     }
@@ -131,13 +149,13 @@ internal class ContactEndpointContractTest {
         val id = getString(ID_FIELD)
         val firstName = getString(FIRST_NAME_FIELD)
         val lastName = getString(LAST_NAME_FIELD)
-        val phoneNumber = getString(PHONE_NUMBER_FIELD)
+        val phoneNumber = PhoneNumber(getString(PHONE_NUMBER_FIELD))
         return Contact(id, firstName, lastName, phoneNumber)
     }
 
     private fun NewContact.toJson(): JSONObject {
 
-        return JSONObject().put(FIRST_NAME_FIELD, firstName).put(LAST_NAME_FIELD, lastName).put(PHONE_NUMBER_FIELD, phoneNumber)
+        return JSONObject().put(FIRST_NAME_FIELD, firstName).put(LAST_NAME_FIELD, lastName).put(PHONE_NUMBER_FIELD, phoneNumber.value)
     }
 
     @Configuration

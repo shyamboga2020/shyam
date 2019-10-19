@@ -1,6 +1,6 @@
 package examples.contract_testing.application
 
-class Contact(val id: String, val firstName: String, val lastName: String, val phoneNumber: String) {
+class Contact(val id: String, val firstName: String, val lastName: String, val phoneNumber: PhoneNumber) {
 
     override fun equals(other: Any?): Boolean {
 
