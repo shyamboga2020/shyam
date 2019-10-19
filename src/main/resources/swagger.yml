@@ -35,6 +35,8 @@ paths:
               schema:
                 type: string
               required: true
+        '422':
+          description: The contact wasn't created because one or more fields were invalid.
 
   /contacts/{id}:
     get:
