@@ -23,8 +23,8 @@ private const val FIRST_NAME_FIELD = "firstName"
 private const val LAST_NAME_FIELD = "lastName"
 private const val PHONE_NUMBER_FIELD = "phoneNumber"
 
-@RequestMapping(ENDPOINT)
 @Controller
+@RequestMapping(ENDPOINT)
 class ContactEndpoint @Autowired constructor(private val registry: ContactsRegistry) {
 
     @GetMapping

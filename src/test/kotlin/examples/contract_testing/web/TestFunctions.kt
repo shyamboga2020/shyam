@@ -25,10 +25,11 @@ fun Assert<JSONObject>.compliesWith(schema: Schema) = given { actual ->
     }
 }
 
-fun Assert<JSONArray>.hasLength(length: Int) = given { actual ->
+inline fun <reified T> T.jsonSchemaAt(location: String): Schema {
 
-    if (actual.length() != length) {
-        fail(length, actual.length())
+    return T::class.java.getResourceAsStream(location).use {
+        val definition = JSONObject(JSONTokener(it))
+        SchemaLoader.load(definition)
     }
 }
 
@@ -36,14 +37,6 @@ fun Assert<JSONArray>.hasSameSizeHas(other: Collection<*>) = given { actual ->
 
     if (actual.length() != other.size) {
         fail(other.size, actual.length())
-    }
-}
-
-inline fun <reified T> T.jsonSchemaAt(location: String): Schema {
-
-    return T::class.java.getResourceAsStream(location).use {
-        val definition = JSONObject(JSONTokener(it))
-        SchemaLoader.load(definition)
     }
 }
 
