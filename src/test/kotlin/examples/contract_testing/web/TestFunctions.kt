@@ -21,7 +21,7 @@ fun Assert<JSONObject>.compliesWith(schema: Schema) = given { actual ->
     try {
         schema.validate(actual)
     } catch (e: ValidationException) {
-        fail("JSON object does not comply with JSON schema $schema.\nErrors were ${e.allMessages}.", e)
+        fail("JSON object does not comply with JSON schema $schema.\n Errors were ${e.allMessages}.", e)
     }
 }
 

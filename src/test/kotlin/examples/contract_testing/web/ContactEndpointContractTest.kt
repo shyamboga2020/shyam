@@ -50,7 +50,7 @@ internal class ContactEndpointContractTest {
     private val newContactSchema = jsonSchemaAt(NEW_CONTACT_SCHEMA_LOCATION)
 
     @Test
-    fun retrieveAll() {
+    fun `retrieve all`() {
 
         val contact1 = Contact("1", "Mark", "Dadada", PhoneNumber("+170231902"))
         val contact2 = Contact("2", "Zack", "Test", PhoneNumber("+167219317"))
@@ -68,7 +68,7 @@ internal class ContactEndpointContractTest {
     }
 
     @Test
-    fun createNew() {
+    fun `create new`() {
 
         val id = "123"
         val newContact = NewContact("Mark", "Dadada", PhoneNumber("+170231902"))
@@ -84,7 +84,7 @@ internal class ContactEndpointContractTest {
     }
 
     @Test
-    fun createNewWithInvalidData() {
+    fun `create new with invalid data`() {
 
         val newContact = NewContact("Mark", "Dadada", PhoneNumber("+170231902"))
 
@@ -99,7 +99,7 @@ internal class ContactEndpointContractTest {
     }
 
     @Test
-    fun retrieveOne() {
+    fun `retrieve one`() {
 
         val contact = Contact("123", "Mark", "Dadada", PhoneNumber("+170231902"))
         `when`(registry[eq(contact.id)]).thenReturn(contact)
@@ -112,7 +112,7 @@ internal class ContactEndpointContractTest {
     }
 
     @Test
-    fun retrieveOneNotFound() {
+    fun `retrieve one not found`() {
 
         val id = "123"
         `when`(registry[eq(id)]).thenReturn(null)
@@ -123,7 +123,7 @@ internal class ContactEndpointContractTest {
     }
 
     @Test
-    fun removeOne() {
+    fun `remove one`() {
 
         val id = "123"
         `when`(registry.remove(eq(id))).thenReturn(true)
@@ -134,7 +134,7 @@ internal class ContactEndpointContractTest {
     }
 
     @Test
-    fun removeOneNotFound() {
+    fun `remove one not found`() {
 
         val id = "123"
         `when`(registry.remove(eq(id))).thenReturn(false)
